@@ -8,13 +8,14 @@ from django.shortcuts import render
 
 import pymongo
 from django.http import HttpResponseRedirect,HttpResponse
-from taoBaoMonitorApp.apiDataModel import getAllData,insertProjectData,getAllProjectData,removeDatabaseChoiceData
+from taoBaoMonitorApp.apiDataModel import getAllData,insertProjectData,getAllProjectData,removeDatabaseChoiceData,downloadExcel
 import json
 import datetime
 import time
 import sys
 import os
 import subprocess
+import createIDProject.settings
 
 
 reload(sys)
@@ -185,6 +186,35 @@ def removeDataAPI(request):
         response["Access-Control-Allow-Headers"] = "*"
         return response
 
+#生成excel并导出下载excel
+def makeDownloadExcel(request):
+
+    if request.method == 'POST':
+        itemID = request.POST.get('babyItemID')
+        name = str(request.POST.get('name'))
+        print 'itemID是。-------------%s'%itemID
+
+        path = os.path.join(createIDProject.settings.BASE_DIR, 'static', 'downloadExcel')
+        fileName = os.path.join(path,name+'.xlsx')
+
+        print '地址是----------------%s' % fileName
+
+        yes = downloadExcel(itemID,fileName)
+        print 'yes或no----------------%s' % yes
+        if yes:
+            url = 'static/downloadExcel/'+name+'.xlsx'
+            content = {'IsErr':False,'IsSuccess':True,'url':url}
+        else:
+            content = {'IsErr':True,'IsSuccess':False,'url':''}
+
+        response = HttpResponse(json.dumps(content, cls=DateEncoder), content_type="application/json")
+        response["Access-Control-Allow-Origin"] = "*"
+        response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+        response["Access-Control-Max-Age"] = "1000"
+        response["Access-Control-Allow-Headers"] = "*"
+        return response
+    else:
+        pass
 
 
 class DateEncoder(json.JSONEncoder):

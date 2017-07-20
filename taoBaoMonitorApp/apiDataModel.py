@@ -3,6 +3,8 @@ import pymongo
 import time
 import datetime
 from bson.objectid import ObjectId
+import pandas as pd
+import os
 
 #mongodb连接类
 class mongodbConn:
@@ -142,6 +144,44 @@ def removeDatabaseChoiceData(removeData):
     for data in removeData:
         conn.TaoBaoScrapyDB.projectKeyWordTB.remove({'_id':ObjectId(data['id'])})
         conn.TaoBaoScrapyDB.TaoBaoSTB.remove({'itemID':data['id']})
+
+
+#生成excel并导出下载
+def downloadExcel(itemID, path):
+    dbconn = mongodbConn()
+    dbconn.connect()
+    conn = dbconn.getConn()
+
+    curr = conn.TaoBaoScrapyDB.TaoBaoSTB.find({'itemID': itemID},{'_id':0,'province':1,'city':1,'name':1,'payPerson':1,'price':1,
+                                                                  'mainPic':1,'detailURL':1,'yearAndMonth':1,'shopName':1})
+    df = pd.DataFrame(list(curr))
+
+    # print df.head()
+
+    df.rename(columns={'city':'城市','province':'省份','name':'宝贝名称','payPerson':
+                        '付款人数','price':'价格','mainPic':'宝贝图片链接','yearAndMonth':'收录时间',
+                       'shopName': '店铺名','detailURL':'宝贝链接'
+                       },inplace=True)
+
+    df.sort_index()
+
+    # df.sort_values(by='city',axis=0,ascending=True,inplace=False,kind='quicksort',na_position='last')
+    # df.sort()
+    # df.columns = ['城市','省份','宝贝名称','付款人数','价格','宝贝图片链接','收录时间','店铺名','宝贝链接']
+
+
+    try:
+        write = pd.ExcelWriter(path)
+        df.to_excel(write,'NAN')
+        write.save()
+        return True
+    except Exception as e:
+
+        return  False
+
+
+
+
 
 
 

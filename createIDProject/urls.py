@@ -32,9 +32,9 @@ urlpatterns = [
     #淘宝数据采集API
     url(r'^getAllDatas', views2.getAllDatas, name='getAllDatas'),
     url(r'^getAllBuildData', views2.getAllBuildData, name='getAllBuildData'),
-    url(r'^startUpSpider', views2.startUpSpider, name='startUpSpider'),
+    url(r'^makeDownloadExcel', views2.makeDownloadExcel, name='makeDownloadExcel'),
     url(r'^inserProject', views2.inserProject, name='inserProject'),
-    url(r'^removeDataAPI', views2.removeDataAPI, name='removeDataAPI')
+    url(r'^removeDataAPI', views2.removeDataAPI, name='removeDataAPI'),
 
 
 
