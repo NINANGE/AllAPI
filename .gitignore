@@ -1,0 +1,7 @@
+*.pyc
+*.log
+*.txt
+migrations/
+.idea/
+settings.py
+run.sh
