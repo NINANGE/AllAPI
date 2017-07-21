@@ -69,6 +69,8 @@ def getAllDatas(request):
             content['shopName'] = data['shopName']
             content['itemID'] = data['itemID']
             content['detailURL'] = data['detailURL']
+            content['category'] = data['category']
+            content['categoryId'] = data['categoryId']
 
 
             allData.append(content)

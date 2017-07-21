@@ -4,6 +4,7 @@ import time
 import datetime
 from bson.objectid import ObjectId
 import pandas as pd
+import numpy
 import os
 
 #mongodb连接类
@@ -126,7 +127,13 @@ def insertProjectData(Datas):
         else:
             state = '已完成'
         #价格区间
-        priceRange = data['priceUpperLimit']+'-'+data['priceDownLimit']
+        priceRange = ''
+        if len(data['priceUpperLimit'])>0 and len(data['priceDownLimit'])==0:
+            priceRange = data['priceUpperLimit']+'-'+'无'
+        elif len(data['priceUpperLimit'])==0 and len(data['priceDownLimit'])>0:
+            priceRange = '0' + '-' + data['priceDownLimit']
+        else:
+            priceRange = data['priceUpperLimit'] + '-' + data['priceDownLimit']
 
         conn.TaoBaoScrapyDB.projectKeyWordTB.save({'name':data['name'],'keyword':data['keyword'],
                                                    'pageNumber':data['pageNumber'],'dayNumber':data['dayNumber'],
@@ -153,14 +160,14 @@ def downloadExcel(itemID, path):
     conn = dbconn.getConn()
 
     curr = conn.TaoBaoScrapyDB.TaoBaoSTB.find({'itemID': itemID},{'_id':0,'province':1,'city':1,'name':1,'payPerson':1,'price':1,
-                                                                  'mainPic':1,'detailURL':1,'yearAndMonth':1,'shopName':1})
+                                                                  'mainPic':1,'detailURL':1,'yearAndMonth':1,'shopName':1,'category':1})
     df = pd.DataFrame(list(curr))
 
     # print df.head()
 
-    df.rename(columns={'city':'城市','province':'省份','name':'宝贝名称','payPerson':
+    df.rename(columns={'province':'省份','name':'宝贝名称','payPerson':
                         '付款人数','price':'价格','mainPic':'宝贝图片链接','yearAndMonth':'收录时间',
-                       'shopName': '店铺名','detailURL':'宝贝链接'
+                       'shopName': '店铺名','city':'城市','detailURL':'宝贝链接','category':'类目'
                        },inplace=True)
 
     df.sort_index()
