@@ -116,6 +116,7 @@ def insertProjectData(Datas):
         delta = datetime.timedelta(days=int(data['dayNumber']))
         endTime = (datetime.datetime.now() + delta).strftime('%Y-%m-%d')
 
+
         state = ''
         start_Time = datetime.datetime.strptime(currentTime,'%Y-%m-%d')
         end_Time = datetime.datetime.strptime(endTime,'%Y-%m-%d')
@@ -134,12 +135,12 @@ def insertProjectData(Datas):
             priceRange = '0' + '-' + data['priceDownLimit']
         else:
             priceRange = data['priceUpperLimit'] + '-' + data['priceDownLimit']
-
+        print '时间类型-------------%s'%type(start_Time)
         conn.TaoBaoScrapyDB.projectKeyWordTB.save({'name':data['name'],'keyword':data['keyword'],
                                                    'pageNumber':data['pageNumber'],'dayNumber':data['dayNumber'],
                                                    'priceUpperLimit':data['priceUpperLimit'],'priceDownLimit':data['priceDownLimit'],
                                                    'priceRange':priceRange,'creator':data['creator'],'beginTime':currentTime,
-                                                   'endTime':endTime,'state':state})
+                                                   'endTime':endTime,'start_Time':start_Time,'end_Time':end_Time,'state':state})
 
 
 #删除指定数据
