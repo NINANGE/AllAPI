@@ -24,10 +24,9 @@ sys.setdefaultencoding("utf-8")
 
 def startUpSpider(request):
     if request.method == 'POST':
-        print '启动爬虫失败'
-        return {'Data': '爬虫启动失败'}
-    else:
         print '启动爬虫成功'
+        os.popen('sh /Users/zhuoqin/taoBaoScrapy/taoBaoScrapy/spiders/startUpTimeTask.sh')
+
         allData = []
 
         allData.append({'Data': '爬虫启动成功'})
@@ -37,6 +36,9 @@ def startUpSpider(request):
         response["Access-Control-Max-Age"] = "1000"
         response["Access-Control-Allow-Headers"] = "*"
         return response
+    else:
+        print '启动爬虫失败'
+        return {'Data': '爬虫启动失败'}
 
 
 
@@ -48,7 +50,7 @@ def getAllDatas(request):
 
         itemID = request.GET.get('itemID')
         market = request.GET.get('market')
-        print '你瞧瞧这数据******************888888888888**********************%s'%(request.GET.get('itemID'))
+
         allData = []
 
         # result = getAllData('上海',itemID)
@@ -72,6 +74,7 @@ def getAllDatas(request):
             content['detailURL'] = data['detailURL']
             content['category'] = data['category']
             content['categoryId'] = data['categoryId']
+            content['market'] = data['market']
 
 
             allData.append(content)
