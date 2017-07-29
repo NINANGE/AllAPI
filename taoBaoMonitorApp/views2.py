@@ -47,13 +47,14 @@ def getAllDatas(request):
     else:
 
         itemID = request.GET.get('itemID')
+        market = request.GET.get('market')
         print '你瞧瞧这数据******************888888888888**********************%s'%(request.GET.get('itemID'))
         allData = []
 
         # result = getAllData('上海',itemID)
-        result = getAllData(itemID)
+        result = getAllData(itemID,market)
         for data in result:
-
+            print data
             content = {}
             content['province'] = data['province']
             content['city'] = data['city']
@@ -88,12 +89,7 @@ def getAllBuildData(request):
         allData = []
 
         result = getAllProjectData()
-        print '_id类型---------999999999999======%s'%result
         for data in result:
-
-            print '_id类型---------%s---------%s'%(type(data['_id']),data['_id'])
-
-
             content = {}
             content['name'] = data['name']
             content['keyword'] = data['keyword']
@@ -107,6 +103,7 @@ def getAllBuildData(request):
             content['endTime'] = data['endTime']
             content['state'] = data['state']
             content['id'] = str(data['_id'])
+            content['market'] = data['market']
 
             allData.append(content)
         response = HttpResponse(json.dumps(allData), content_type="application/json")

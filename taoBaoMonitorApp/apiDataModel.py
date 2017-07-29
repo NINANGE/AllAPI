@@ -23,19 +23,23 @@ class mongodbConn:
 
 
 
-def getAllData(itemID):
+def getAllData(itemID,market):
 
     dbconn = mongodbConn()
     dbconn.connect()
-    print '****************************************'
     conn = dbconn.getConn()
-    print '******************###3**********************'
     table = conn.TaoBaoScrapyDB.TaoBaoSTB
 
-    print '你大爷的数据------------------------%s'%itemID
+    print '你大爷的数据------------------------%s'%market
 
     # result = table.find({'city':cityName,'itemID':itemID})
-    result = table.find({'itemID': itemID})
+    if market == '1':
+        # result = table.find({'itemID': itemID},{'detailURL':{'$regex':"taobao"}})
+        result = table.find({"itemID" : itemID,"detailURL":{'$regex':"taobao"}})
+
+    else:
+        result = table.find({'itemID': itemID})
+        print '进来天猫了'
     print '你大爷的数据2------------------------%s' % result
     return result
 
@@ -140,7 +144,7 @@ def insertProjectData(Datas):
                                                    'pageNumber':data['pageNumber'],'dayNumber':data['dayNumber'],
                                                    'priceUpperLimit':data['priceUpperLimit'],'priceDownLimit':data['priceDownLimit'],
                                                    'priceRange':priceRange,'creator':data['creator'],'beginTime':currentTime,
-                                                   'endTime':endTime,'start_Time':start_Time,'end_Time':end_Time,'state':state})
+                                                   'endTime':endTime,'start_Time':start_Time,'end_Time':end_Time,'state':state,'market':data['market']})
 
 
 #删除指定数据
