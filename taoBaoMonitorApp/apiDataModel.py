@@ -61,16 +61,6 @@ def getAllProjectData():
 def updateProjectState(table,detailT,result):
 
     for data in result:
-        # currentTime = datetime.datetime.now().strftime('%Y-%m-%d')
-        #
-        # delta = datetime.timedelta(days=int(data['dayNumber']))
-        #
-        # endTime = (datetime.datetime.now() + delta).strftime('%Y-%m-%d')
-        #
-        # state = ''
-        # start_Time = datetime.datetime.strptime(currentTime, '%Y-%m-%d')
-        # end_Time = datetime.datetime.strptime(endTime, '%Y-%m-%d')
-
 
         currentTime = datetime.datetime.now().strftime('%Y-%m-%d')
 
@@ -159,16 +149,20 @@ def removeDatabaseChoiceData(removeData):
 
 
 #生成excel并导出下载
-def downloadExcel(itemID, path):
+def downloadExcel(itemID, path,market):
     dbconn = mongodbConn()
     dbconn.connect()
     conn = dbconn.getConn()
 
-    curr = conn.TaoBaoScrapyDB.TaoBaoSTB.find({'itemID': itemID},{'_id':0,'province':1,'city':1,'name':1,'payPerson':1,'price':1,
-                                                                  'mainPic':1,'detailURL':1,'yearAndMonth':1,'shopName':1,'category':1})
+    if market == '1':
+        curr = conn.TaoBaoScrapyDB.TaoBaoSTB.find({'itemID': itemID,"detailURL":{'$regex':"taobao"}},{'_id':0,'province':1,'city':1,'name':1,'payPerson':1,'price':1,
+                                                                      'mainPic':1,'detailURL':1,'yearAndMonth':1,'shopName':1,'category':1})
+    else:
+        curr = conn.TaoBaoScrapyDB.TaoBaoSTB.find({'itemID': itemID},{'_id': 0, 'province': 1, 'city': 1, 'name': 1, 'payPerson': 1,'price': 1,
+                                                   'mainPic': 1, 'detailURL': 1, 'yearAndMonth': 1, 'shopName': 1,'category': 1})
     df = pd.DataFrame(list(curr))
 
-    # print df.head()
+
 
     df.rename(columns={'province':'省份','name':'宝贝名称','payPerson':
                         '付款人数','price':'价格','mainPic':'宝贝图片链接','yearAndMonth':'收录时间',

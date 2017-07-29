@@ -191,6 +191,7 @@ def makeDownloadExcel(request):
     if request.method == 'POST':
         itemID = request.POST.get('babyItemID')
         name = str(request.POST.get('name'))
+        market = request.POST.get('market')
         print 'itemID是。-------------%s'%itemID
 
         path = os.path.join(createIDProject.settings.BASE_DIR, 'static', 'downloadExcel')
@@ -198,7 +199,7 @@ def makeDownloadExcel(request):
 
         print '地址是----------------%s' % fileName
 
-        yes = downloadExcel(itemID,fileName)
+        yes = downloadExcel(itemID,fileName,market)
         print 'yes或no----------------%s' % yes
         if yes:
             url = 'static/downloadExcel/'+name+'.xlsx'
