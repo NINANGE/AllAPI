@@ -64,7 +64,8 @@ def createPros(request):
             # sql_text = "insert into T_Treasure_EvalCustomItem values ('%s','%s','%d','%d','%s','%s','%d','%s','%s')"
             conn.exec_one_by_one_query('', insert_data)
 
-            sql_text = "insert into T_Treasure_EvalCustomItem values ('%s','%s','%d','%d','%s','%s','%d','%s','%s')" % (ItemID,v[0]['name'],int(v[0]['days']),1,createTime,'',1,'',creator)
+            #sql_text = "insert into T_Treasure_EvalCustomItem values ('%s','%s','%d','%d','%s','%s','%d','%s','%s')" % (ItemID,v[0]['name'],int(v[0]['days']),1,createTime,'',1,'',creator)
+            sql_text = "insert into T_Treasure_EvalCustomItem (ItemID, ItemName, Validity, ItemStatus, CreateTime, PollCount, Creator) VALUES ('%s', '%s', '%d', 1, '%s', 1, '%s')" % (ItemID,v[0]['name'],int(v[0]['days']),createTime,creator)
             conn.exec_non_query(sql_text)
 
         #跨域问题需要
