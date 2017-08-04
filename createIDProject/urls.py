@@ -36,7 +36,7 @@ urlpatterns = [
     url(r'^inserProject', views2.inserProject, name='inserProject'),
     url(r'^removeDataAPI', views2.removeDataAPI, name='removeDataAPI'),
     url(r'^startUpSpider', views2.startUpSpider, name='startUpSpider'),
-
+    url(r'^storeAllPosition', views2.storeAllPosition, name='storeAllPosition'),
 
 ]
 

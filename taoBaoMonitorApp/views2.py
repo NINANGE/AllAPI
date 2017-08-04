@@ -8,7 +8,7 @@ from django.shortcuts import render
 
 import pymongo
 from django.http import HttpResponseRedirect,HttpResponse
-from taoBaoMonitorApp.apiDataModel import getAllData,insertProjectData,getAllProjectData,removeDatabaseChoiceData,downloadExcel
+from taoBaoMonitorApp.apiDataModel import getAllData,insertProjectData,getAllProjectData,removeDatabaseChoiceData,downloadExcel,getStorePosition
 import json
 import datetime
 import time
@@ -25,7 +25,7 @@ sys.setdefaultencoding("utf-8")
 def startUpSpider(request):
     if request.method == 'POST':
         print '启动爬虫成功'
-        os.popen('sh /Users/zhuoqin/taoBaoScrapy/taoBaoScrapy/spiders/startUpTimeTask.sh')
+        os.popen('sh /home/django/nange/taoBaoSpider/taoBaoScrapy/spiders/startUpTimeTask.sh')
 
         allData = []
 
@@ -50,13 +50,12 @@ def getAllDatas(request):
 
         itemID = request.GET.get('itemID')
         market = request.GET.get('market')
-
+        state = request.GET.get('state')
         allData = []
 
         # result = getAllData('上海',itemID)
-        result = getAllData(itemID,market)
+        result = getAllData(itemID,market,state)
         for data in result:
-            print data
             content = {}
             content['province'] = data['province']
             content['city'] = data['city']
@@ -75,7 +74,8 @@ def getAllDatas(request):
             content['category'] = data['category']
             content['categoryId'] = data['categoryId']
             content['market'] = data['market']
-
+            content['customized'] = data['customized']
+            content['offTime'] = data['offTime']
 
             allData.append(content)
         response = HttpResponse(json.dumps(allData) ,content_type="application/json")
@@ -107,6 +107,7 @@ def getAllBuildData(request):
             content['state'] = data['state']
             content['id'] = str(data['_id'])
             content['market'] = data['market']
+            content['customized'] = data['customized']
 
             allData.append(content)
         response = HttpResponse(json.dumps(allData), content_type="application/json")
@@ -120,13 +121,12 @@ def getAllBuildData(request):
 #插入数据
 def inserProject(request):
     if request.method == 'POST':
-        print '插入成功'
 
         datas = request.POST.get('Datas')
         datas = json.loads(datas)
         insertProjectData(datas)
 
-        print '数据是-----%s' % len(datas)
+        # print '数据是-----%s' % len(datas)
 
         for ceShiData in datas:
             print '结果数据是-----%s' %ceShiData
@@ -142,7 +142,7 @@ def inserProject(request):
     else:
         datas = request.POST.get('Datas')
         datas = json.loads(datas)
-        print '数据是*********-----%s' % datas
+
 
         # 跨域问题需要
         response = HttpResponse(json.dumps({'info': 'OK'}, cls=DateEncoder), content_type="application/json")
@@ -202,7 +202,7 @@ def makeDownloadExcel(request):
 
         print '地址是----------------%s' % fileName
 
-        yes = downloadExcel(itemID,fileName,market)
+        yes = downloadExcel(itemID,fileName)
         print 'yes或no----------------%s' % yes
         if yes:
             url = 'static/downloadExcel/'+name+'.xlsx'
@@ -218,6 +218,38 @@ def makeDownloadExcel(request):
         return response
     else:
         pass
+
+#店铺地区
+def storeAllPosition(request):
+    if request.method == 'GET':
+        itemID = request.GET.get('itemID')
+        result = getStorePosition(itemID)
+        allData = []
+
+        for data in result:
+            conntent = {}
+            conntent['id'] = str(data['_id'])
+            conntent['url'] = data['url']
+            conntent['cityCode'] = data['cityCode']
+            conntent['tel'] = data['tel']
+            conntent['district'] = data['district']
+            conntent['address'] = data['address']
+            conntent['latitude'] = data['latitude']
+            conntent['storeName'] = data['storeName']
+            conntent['ID'] = data['ID']
+            conntent['longitude'] = data['longitude']
+            allData.append(conntent)
+        response = HttpResponse(json.dumps(allData), content_type="application/json")
+        response["Access-Control-Allow-Origin"] = "*"
+        response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+        response["Access-Control-Max-Age"] = "1000"
+        response["Access-Control-Allow-Headers"] = "*"
+        return response
+    else:
+        pass
+
+
+
 
 
 class DateEncoder(json.JSONEncoder):

@@ -23,21 +23,25 @@ class mongodbConn:
 
 
 
-def getAllData(itemID,market):
+def getAllData(itemID,market,state):
 
     dbconn = mongodbConn()
     dbconn.connect()
     conn = dbconn.getConn()
     table = conn.TaoBaoScrapyDB.TaoBaoSTB
 
-    print '你大爷的数据------------------------%s'%market
+    # print '你大爷的数据------------------------%s'%market
 
     # result = table.find({'city':cityName,'itemID':itemID})
     # if market == '1':
     #     result = table.find({"itemID" : itemID,"detailURL":{'$regex':"taobao"}})
     #
     # else:
-    result = table.find({'itemID': itemID})
+
+    table.update({'itemID':itemID }, {'$set': {'state': state}})
+    tables = conn.TaoBaoScrapyDB.TaoBaoSTB
+    result = tables.find({'itemID': itemID})
+
     return result
 
 def getAllProjectData():
@@ -65,7 +69,7 @@ def updateProjectState(table,detailT,result):
 
         # endTime = (datetime.datetime.now() + delta).strftime('%Y-%m-%d')
 
-        print 'endTime类型是----------------%s'%data['endTime']
+        # print 'endTime类型是----------------%s'%data['endTime']
 
         state = ''
         start_Time = datetime.datetime.strptime(currentTime, '%Y-%m-%d')
@@ -78,12 +82,11 @@ def updateProjectState(table,detailT,result):
 
         # print '数据个数为--------------------------%s' % data['_id']
 
-        print '打印数据为--------------------------%s' % detailResult.count()
+        # print '打印数据为--------------------------%s' % detailResult.count()
         # for datas in detailResult:
         #     print '打印数据为--------------------------%s'%datas
 
         if D_value.days < 0:
-            print '456456------------------%s'%data['_id']
             table.update({'_id': ObjectId(data['_id'])}, {'$set': {'state': '已完成'}})
 
         elif detailResult.count()==0 and D_value.days>=0:
@@ -131,7 +134,9 @@ def insertProjectData(Datas):
                                                    'pageNumber':data['pageNumber'],'dayNumber':data['dayNumber'],
                                                    'priceUpperLimit':data['priceUpperLimit'],'priceDownLimit':data['priceDownLimit'],
                                                    'priceRange':priceRange,'creator':data['creator'],'beginTime':currentTime,
-                                                   'endTime':endTime,'start_Time':start_Time,'end_Time':end_Time,'state':state,'market':data['market']})
+                                                   'endTime':endTime,'start_Time':start_Time,'end_Time':end_Time,'state':state,'market':data['market'],
+                                                   'customized':data['customized']
+                                                   })
 
 
 #删除指定数据
@@ -146,7 +151,7 @@ def removeDatabaseChoiceData(removeData):
 
 
 #生成excel并导出下载
-def downloadExcel(itemID, path,market):
+def downloadExcel(itemID, path):
     dbconn = mongodbConn()
     dbconn.connect()
     conn = dbconn.getConn()
@@ -156,15 +161,15 @@ def downloadExcel(itemID, path,market):
     #                                                                   'mainPic':1,'detailURL':1,'yearAndMonth':1,'shopName':1,'category':1})
     # else:
     curr = conn.TaoBaoScrapyDB.TaoBaoSTB.find({'itemID': itemID},{'_id': 0, 'province': 1, 'city': 1, 'name': 1, 'payPerson': 1,'price': 1,
-                                                   'mainPic': 1, 'detailURL': 1, 'yearAndMonth': 1, 'shopName': 1,'category': 1,'market':1})
+                                                   'mainPic': 1, 'detailURL': 1, 'yearAndMonth': 1, 'shopName': 1,'category': 1,'market':1,'offTime':1})
     df = pd.DataFrame(list(curr))
 
 
 
     df.rename(columns={'province':'省份','name':'宝贝名称','payPerson':
                         '付款人数','price':'价格','mainPic':'宝贝图片链接','yearAndMonth':'收录时间',
-                       'shopName': '店铺名','city':'城市','detailURL':'宝贝链接','category':'类目','market':'平台'
-                       },inplace=True)
+                       'shopName': '店铺名','city':'城市','detailURL':'宝贝链接','category':'类目','market':'平台',
+                       'offTime':'下架时间'},inplace=True)
 
     df.sort_index()
 
@@ -175,14 +180,23 @@ def downloadExcel(itemID, path,market):
 
     try:
         write = pd.ExcelWriter(path)
-        df.to_excel(write,'林氏木业')
+        df.to_excel(write,u'林氏木业')
         write.save()
         return True
     except Exception as e:
         print 'miss-------%s'%e
         return  False
 
+#得到宝贝店铺地区
+def getStorePosition(itemID):
+    dbconn = mongodbConn()
+    dbconn.connect()
+    conn = dbconn.getConn()
 
+    storeTB = conn.TaoBaoScrapyDB.ALLStoreTB
+    result = storeTB.find({'itemID':itemID})
+    # result = storeTB.find({})
+    return result
 
 
 
