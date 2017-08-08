@@ -23,7 +23,7 @@ class mongodbConn:
 
 
 
-def getAllData(itemID,market,state):
+def getAllData(itemID,state,pageSize,pageNumber,searchTEXTS):
 
     dbconn = mongodbConn()
     dbconn.connect()
@@ -38,9 +38,28 @@ def getAllData(itemID,market,state):
     #
     # else:
 
+
+
     table.update({'itemID':itemID }, {'$set': {'state': state}})
     tables = conn.TaoBaoScrapyDB.TaoBaoSTB
-    result = tables.find({'itemID': itemID})
+    # result = tables.find({'itemID': itemID}).skip(0).limit(pageCount).sort([{"yearAndMonth":-1}])
+
+    if pageNumber == 1:
+        pageNumbers = pageNumber
+    else:
+        pageNumbers = (pageNumber-1)*pageSize
+    print '结果----中啦-----%s---%s---%s'%(pageNumbers,pageSize,searchTEXTS)
+
+    # if len(searchText)==0:
+
+    if len(searchTEXTS)== 0:
+
+        result = tables.find({'itemID': itemID}).skip(pageNumbers).limit(pageSize).sort("yearAndMonth",pymongo.ASCENDING) #分页查询，sort里面只能写一个字段，默认为升序,升序：ASCENDING 降序：DESCENDING
+    # result = tables.find({'itemID': itemID})
+    else:
+        result = tables.find({'itemID': itemID,"ID": {'$regex': searchTEXTS, '$options':'i'}}).skip(pageNumbers).limit(pageSize).sort("yearAndMonth",pymongo.ASCENDING)
+
+    # result = tables.find({'itemID': itemID}).skip(0).limit(500)
 
     return result
 
@@ -129,7 +148,6 @@ def insertProjectData(Datas):
             priceRange = '0' + '-' + data['priceDownLimit']
         else:
             priceRange = data['priceUpperLimit'] + '-' + data['priceDownLimit']
-        print '时间类型-------------%s'%type(start_Time)
         conn.TaoBaoScrapyDB.projectKeyWordTB.save({'name':data['name'],'keyword':data['keyword'],
                                                    'pageNumber':data['pageNumber'],'dayNumber':data['dayNumber'],
                                                    'priceUpperLimit':data['priceUpperLimit'],'priceDownLimit':data['priceDownLimit'],
