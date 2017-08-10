@@ -105,7 +105,7 @@ def updateProjectState(table,detailT,result):
         # for datas in detailResult:
         #     print '打印数据为--------------------------%s'%datas
 
-        if D_value.days < 0:
+        if D_value.days <= 0:
             table.update({'_id': ObjectId(data['_id'])}, {'$set': {'state': '已完成'}})
 
         elif detailResult.count()==0 and D_value.days>=0:
