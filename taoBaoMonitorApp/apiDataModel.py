@@ -57,7 +57,7 @@ def getAllData(itemID,state,pageSize,pageNumber,searchTEXTS):
         result = tables.find({'itemID': itemID}).skip(pageNumbers).limit(pageSize).sort("yearAndMonth",pymongo.ASCENDING) #分页查询，sort里面只能写一个字段，默认为升序,升序：ASCENDING 降序：DESCENDING
     # result = tables.find({'itemID': itemID})
     else:
-        result = tables.find({'itemID': itemID,"ID": {'$regex': searchTEXTS, '$options':'i'}}).skip(pageNumbers).limit(pageSize).sort("yearAndMonth",pymongo.ASCENDING)
+        result = tables.find({'itemID': itemID,"ID": {'$regex': searchTEXTS, '$options':'i'}})#.skip(pageNumbers).limit(pageSize).sort("yearAndMonth",pymongo.ASCENDING)
 
     # result = tables.find({'itemID': itemID}).skip(0).limit(500)
 
@@ -166,6 +166,7 @@ def removeDatabaseChoiceData(removeData):
     for data in removeData:
         conn.TaoBaoScrapyDB.projectKeyWordTB.remove({'_id':ObjectId(data['id'])})
         conn.TaoBaoScrapyDB.TaoBaoSTB.remove({'itemID':data['id']})
+        conn.TaoBaoScrapyDB.ALLStoreTB.remove({'itemID':data['id']})
 
 
 #生成excel并导出下载
@@ -211,10 +212,10 @@ def getStorePosition(itemID):
     dbconn.connect()
     conn = dbconn.getConn()
 
-    storeTB = conn.TaoBaoScrapyDB.ALLStoreTB
-    result = storeTB.find({'itemID':itemID})
+    # storeTB = conn.TaoBaoScrapyDB.ALLStoreTB
+    # result = storeTB.find({'itemID':itemID})
     # result = storeTB.find({})
-    return result
+    return conn.TaoBaoScrapyDB.ALLStoreTB.find({'itemID':itemID})
 
 
 
