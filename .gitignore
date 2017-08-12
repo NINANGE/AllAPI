@@ -3,7 +3,5 @@
 *.txt
 migrations/
 .idea/
-settings.py
-run.sh
 *.xlsx
 static/
