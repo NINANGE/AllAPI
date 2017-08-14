@@ -8,7 +8,7 @@ from django.shortcuts import render
 
 import pymongo
 from django.http import HttpResponseRedirect,HttpResponse
-from taoBaoMonitorApp.apiDataModel import getAllData,insertProjectData,getAllProjectData,removeDatabaseChoiceData,downloadExcel,getStorePosition
+from taoBaoMonitorApp.apiDataModel import getAllData,insertProjectData,getAllProjectData,removeDatabaseChoiceData,downloadExcel,downloadShopExcel,getStorePosition
 import json
 import datetime
 import time
@@ -226,7 +226,22 @@ def makeDownloadExcel(request):
         response["Access-Control-Allow-Headers"] = "*"
         return response
     else:
-        pass
+        itemID = request.GET.get('babyItemID')
+        name = str(request.GET.get('name'))
+        path = os.path.join(createIDProject.settings.BASE_DIR, 'static', 'ShopDownloadExcel')
+        fileName = os.path.join(path,name+'店铺信息.xlsx')
+        yes = downloadShopExcel(itemID,fileName)
+        if yes:
+            url = 'static/ShopDownloadExcel/' + name + '店铺信息.xlsx'
+            content = {'IsErr':False,'IsSuccess':True,'url':url}
+        else:
+            content = {'IsErr':False,'IsSuccess':True,'url':''}
+        response = HttpResponse(json.dumps(content, cls=DateEncoder), content_type="application/json")
+        response["Access-Control-Allow-Origin"] = "*"
+        response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+        response["Access-Control-Max-Age"] = "1000"
+        response["Access-Control-Allow-Headers"] = "*"
+        return response
 
 #店铺地区
 def storeAllPosition(request):

@@ -206,6 +206,27 @@ def downloadExcel(itemID, path):
         print 'miss-------%s'%e
         return  False
 
+#生成店铺信息excel并导出
+def downloadShopExcel(itemID,path):
+    dbconn = mongodbConn()
+    dbconn.connect()
+    conn = dbconn.getConn()
+    curr = conn.TaoBaoScrapyDB.ALLStoreTB.find({'itemID': itemID},{'_id':0,'storeName':1,'tel':1,'address':1})
+    df = pd.DataFrame(list(curr))
+
+    df.rename(columns={'storeName': '店铺名', 'tel': '电话', 'address':'地址'}, inplace=True)
+    df.sort_index()
+    try:
+        write = pd.ExcelWriter(path)
+        df.to_excel(write,u'店铺信息')
+        write.save()
+        return True
+    except Exception as e:
+        print 'miss-------%s'%e
+        return  False
+
+
+
 #得到宝贝店铺地区
 def getStorePosition(itemID):
     dbconn = mongodbConn()
