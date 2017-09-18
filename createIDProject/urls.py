@@ -28,6 +28,8 @@ urlpatterns = [
     url(r'^lsedit_projects', views.lsedit_projects, name='lsedit_projects'),
     url(r'^lsAll_PinLun', views.lsAll_PinLun, name='lsAll_PinLun'),
     url(r'^lsDelete_data$', views.lsDelete_data, name='lsDelete_data'),
+    url(r'^downloadAllCommentAPI',views.downloadAllCommentAPI,name='downloadAllCommentAPI'),
+    url(r'^startUpCommentSpider', views.startUpCommentSpider, name='startUpCommentSpider'),
 
     #淘宝数据采集API
     url(r'^getAllDatas', views2.getAllDatas, name='getAllDatas'),
