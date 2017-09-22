@@ -285,11 +285,11 @@ def insertProAndProDetail(proData,creator,createTime,ItemName):
 
 
 #全部评评论内容
-def getAllProDetailComment(ItemName,TreasureID):
+def getAllProDetailComment(ItemName,TreasureID,ItemID):
     dbconn = mongodbConns()
     dbconn.connect()
     conn = dbconn.getConn()
-    return conn.CommentDB.commentContentTB.find({'TreasureID':TreasureID,'ItemName':ItemName})
+    return conn.CommentDB.commentContentTB.find({'TreasureID':TreasureID,'ItemID':ItemID})
 
 #删除项目及对应的产品数据和评论内容数据
 def removeProAndDetailWithComment(ItemIDS):

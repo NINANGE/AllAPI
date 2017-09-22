@@ -287,8 +287,9 @@ def lsAll_PinLun(request):
     if request.method == 'GET':
         treasureID = request.GET.get('TreasureID')
         itemName = request.GET.get('ItemName')
+        ItemID = request.GET.get('ItemID')
         # res = getAll_PinLun(itemName,treasureID) #TODO 旧数据，弃用
-        res = getAllProDetailComment(itemName,treasureID)
+        res = getAllProDetailComment(itemName,treasureID,ItemID)
         all_PinLun = []
         #TODO:XDF 旧数据，弃用
         # if len(res) == 0:
