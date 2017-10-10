@@ -310,13 +310,14 @@ def downloadCommentExcel(itemID,path):
     dbconn.connect()
     conn = dbconn.getConn()
     curr = conn.CommentDB.commentContentTB.find({'ItemID': itemID},{'_id':0,'ItemName':1,'TreasureID':1,'TreasureName':1,'TreasureLink':1,'ShopName':1,
-                                                                    'EvaluationScores':1,'Category_Name':1,'StyleName':1,'auctionSku':1,'rateContent':1,'ImgServiceURL':1
+                                                                    'EvaluationScores':1,'Category_Name':1,'StyleName':1,'auctionSku':1,'rateContent':1,'ImgServiceURL':1,
+                                                                    'RateDate':1
                                                                     })
     df = pd.DataFrame(list(curr))
 
     df.rename(columns={'ItemName': '项目名称', 'TreasureID': '宝贝ID', 'TreasureName':'宝贝名称', 'TreasureLink':'宝贝链接', 'ShopName':'商店名称',
                        'EvaluationScores':'宝贝评分','Category_Name':'类目','StyleName':'风格','auctionSku':'规格描述','rateContent':'买家评论',
-                       'ImgServiceURL':'评论图片'
+                       'ImgServiceURL':'评论图片','RateDate':'评论时间'
                        }, inplace=True)
     df.sort_index()
     print '正在下载中。。。。'
