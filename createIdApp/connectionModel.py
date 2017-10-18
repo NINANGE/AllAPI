@@ -269,9 +269,10 @@ def insertProAndProDetail(proData,creator,createTime,ItemName):
 
     for i in range(0,len(proData)):
         print '你爸爸的%s'%i
+        TreasureID = proData[i]['IDs'].replace(' ','')
         conn.CommentDB.commentCustomItemDetailTB.save({'MergeGuid':'','GrpName':'','ShopName':'','spuId':'','Shop_Platform':'','CollectionNum':'',
                                                    'EvaluationScores':'','ItemName':ItemName,'ItemID':ItemID,'StyleName':'','ModifyDate':createTime,
-                                                   'ShortName':'','TreasureLink':'','IsMerge':'','brand':'','shopID':'','TreasureID':proData[i]['IDs'],'brandId':'',
+                                                   'ShortName':'','TreasureLink':'','IsMerge':'','brand':'','shopID':'','TreasureID':TreasureID,'brandId':'',
                                                    'TreasureFileURL':'','Treasure_Status':0,'CategoryId':'','Category_Name':'','ShopURL':'',
                                                    'Monthly_Volume':'','InsertDate':createTime,'rootCatId':'','Url_No':'','TreasureName':''
                                                    })
