@@ -10,10 +10,13 @@ def GetAllTmallYuShouData():
 
     return result
 
-def GetTmallYuShouBaseInfoData():
+def GetTmallYuShouBaseInfoData(TreasureID):
     dbconn = mongodbConn()
     dbconn.connect()
     conn = dbconn.getConn()
-    result = conn.conn.TmallYuShouDB.TmallYuShouTB.find({})
-    print '返回基本信息数据'
+    if TreasureID:
+        result = conn.TmallYuShouDB.find({"TreasureID": {"$in": [TreasureID]}})
+    else:
+        result = conn.TmallYuShouDB.find({})
+    print '返回基本信息'
     return result

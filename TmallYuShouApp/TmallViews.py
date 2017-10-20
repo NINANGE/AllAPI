@@ -18,13 +18,14 @@ reload(sys)
 sys.setdefaultencoding("utf-8")
 
 # @csrf_exempt
-def GetTmallYuShouDataAPI(request):
+def GetTmallYuShouBaseInfoDataAPI(request):
     if request.method == 'POST':
         print '******************888888888888**********************'
     else:
+        TreasureID = request.GET.get('TreasureID')
         allData = []
 
-        result = GetAllTmallYuShouData()
+        result = GetTmallYuShouBaseInfoData(TreasureID)
         for data in result:
             content = {}
             content['TreasureID'] = data['TreasureID']
@@ -49,11 +50,15 @@ def GetTmallYuShouDataAPI(request):
         response["Access-Control-Allow-Headers"] = "*"
         return response
 
-def GetTmallYuShouBaseInfoDataAPI(request):
+def GetTmallYuShouDataAPI(request):
     if request.method == 'GET':
         allData = []
 
+
+
         result = GetAllTmallYuShouData()
+
+
         for data in result:
             content = {}
             content['TreasureID'] = data['TreasureID']
