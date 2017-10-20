@@ -20,6 +20,7 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from createIdApp import views
 from taoBaoMonitorApp import views2
+from TmallYuShouApp import TmallViews
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 
@@ -39,6 +40,9 @@ urlpatterns = [
     url(r'^removeDataAPI', views2.removeDataAPI, name='removeDataAPI'),
     url(r'^startUpSpider', views2.startUpSpider, name='startUpSpider'),
     url(r'^storeAllPosition', views2.storeAllPosition, name='storeAllPosition'),
+
+    #天猫预售数据API
+    url(r'^GetTmallYuShouDataAPI', TmallViews.GetTmallYuShouDataAPI, name='GetTmallYuShouDataAPI'),
 
 ]
 
