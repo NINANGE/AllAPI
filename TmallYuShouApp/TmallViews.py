@@ -6,7 +6,7 @@ from django.shortcuts import render
 
 import pymongo
 from django.http import HttpResponseRedirect,HttpResponse
-from TmallYuShouApp.TmallApiConnectionModel import GetAllTmallYuShouData
+from TmallYuShouApp.TmallApiConnectionModel import GetAllTmallYuShouData,GetTmallYuShouBaseInfoData
 import json
 import datetime
 import sys
@@ -24,60 +24,66 @@ def GetTmallYuShouDataAPI(request):
     else:
         allData = []
 
-        # result = getAllData('上海',itemID)
         result = GetAllTmallYuShouData()
         for data in result:
             content = {}
-            content['NCategory_Name'] = data['NCategory_Name']
-            content['Re_PreNum'] = data['reserveCount']
-            content['Category_Name'] = data['categoryName']
-            content['spuId'] = data['spuId']
-            content['ReservationStatus'] = data['ReservationStatus']
-            content['brand'] = data['brand']
-            content['modifyTime'] = data['modifyTime']
-
-            content['productState'] = data['productState']
-            content['TreasureID'] = data['TreasureID']
-            content['ShopID'] = data['ShopID']
-            content['Is_Search'] = data['Is_Search']
-            content['EvaluationScores'] = data['EvaluationScores']
-            content['NStyleName'] = data['NStyleName']
-
-            content['paymentFinishDate'] = data['paymentFinishDate']
-            content['EndTime'] = data['EndTime']
-            content['CollectionNum'] = data['CollectionNum']
-            content['brandId'] = data['brandId']
-
-            content['ItemName'] = data['ItemName']
-            content['presellPrice'] = data['presellPrice']
-            content['ShopURL'] = data['ShopURL']
-
-            content['StyleName'] = data['StyleName']
-            content['shopName'] = data['shopName']
-            content['title'] = data['title']
-            content['EffectiveTime'] = data['EffectiveTime']
-            content['presellPrice'] = data['presellPrice']
-            content['ShopURL'] = data['ShopURL']
-            content['popularity'] = data['popularity']
-            content['paymentBeginDate'] = data['paymentBeginDate']
-
-            content['mainPic'] = data['mainPic']
-            content['JHSmodifyTime'] = data['JHSmodifyTime']
-            content['rootCatId'] = data['rootCatId']
-
+            content['TreasureID'] = data['NCategory_Name']
             content['StartTime'] = data['StartTime']
-            content['NewstPrice'] = data['NewstPrice']
-            content['categoryId'] = data['categoryId']
+            content['EndTime'] = data['EndTime']
+            content['TailStartTime'] = data['paymentBeginDate']
+            content['TailEndTime'] = data['paymentFinishDate']
+            content['Re_PreNum'] = data['reserveCount']
+            content['T_Price'] = data['presellPrice']
+            content['Collection_Num'] = data['CollectionNum']
             content['URL_NO'] = data['URL_NO']
-
+            content['CreateTime'] = data['spiderTime']
+            content['ModifyTime'] = data['modifyTime']
 
             allData.append(content)
-        # ErrDesc = {'ErrDesc':result.count()}
-        # allData.append(ErrDesc)
-        # print allData
         res = {'Data': allData, 'totalCount': result.count()}
 
         response = HttpResponse(json.dumps(res,cls=DateEncoder) ,content_type="application/json")
+        response["Access-Control-Allow-Origin"] = "*"
+        response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+        response["Access-Control-Max-Age"] = "1000"
+        response["Access-Control-Allow-Headers"] = "*"
+        return response
+
+def GetTmallYuShouBaseInfoDataAPI(request):
+    if request.method == 'GET':
+        allData = []
+
+        result = GetAllTmallYuShouData()
+        for data in result:
+            content = {}
+            content['TreasureID'] = data['TreasureID']
+            content['TreasureName'] = data['title']
+            content['TreasureLink'] = data['detailURL']
+            content['ShopID'] = data['ShopID']
+            content['ShopName'] = data['shopName']
+            content['Is_Search'] = data['Is_Search']
+            content['InsertDate'] = data['spiderTime']
+            content['ModifyDate'] = data['modifyTime']
+            content['Category_Name'] = data['categoryName']
+            content['spuId'] = data['spuId']
+            content['EvaluationScores'] = data['EvaluationScores']
+            content['ShopURL'] = data['ShopURL']
+            content['TreasureHref'] = data['mainPic']
+            content['TreasureFileURL'] = data['mainPic']
+            content['Url_No'] = data['URL_NO']
+            content['CategoryId'] = data['categoryId']
+            content['brandId'] = data['brandId']
+            content['brand'] = data['brand']
+            content['rootCatId'] = data['rootCatId']
+            content['StyleName'] = data['StyleName']
+            content['CollectionNum'] = data['popularity']
+            content['JHSmodifyTime'] = data['JHSmodifyTime']
+            content['ItemName'] = data['ItemName']
+
+            allData.append(content)
+        res = {'Data': allData, 'totalCount': result.count()}
+
+        response = HttpResponse(json.dumps(res, cls=DateEncoder), content_type="application/json")
         response["Access-Control-Allow-Origin"] = "*"
         response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
         response["Access-Control-Max-Age"] = "1000"
@@ -92,3 +98,34 @@ class DateEncoder(json.JSONEncoder):
             return obj.strftime("%Y-%m-%d")
         else:
             return json.JSONEncoder.default(self, obj)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

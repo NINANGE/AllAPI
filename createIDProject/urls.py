@@ -43,7 +43,7 @@ urlpatterns = [
 
     #天猫预售数据API
     url(r'^GetTmallYuShouDataAPI', TmallViews.GetTmallYuShouDataAPI, name='GetTmallYuShouDataAPI'),
-
+    url(r'^TmallYuShouBaseInfoAPI', TmallViews.GetTmallYuShouBaseInfoDataAPI, name='TmallYuShouBaseInfoAPI'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
