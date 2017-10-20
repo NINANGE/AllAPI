@@ -28,22 +28,26 @@ def GetTmallYuShouBaseInfoDataAPI(request):
         result = GetTmallYuShouBaseInfoData(TreasureID)
         for data in result:
             content = {}
+            T_Price = data['presellPrice']
+            if '-' in T_Price:
+                T_Price = T_Price.split('-')[0]
+
             content['TreasureID'] = data['TreasureID']
             content['StartTime'] = data['StartTime']
             content['EndTime'] = data['EndTime']
             content['TailStartTime'] = data['paymentBeginDate']
             content['TailEndTime'] = data['paymentFinishDate']
             content['Re_PreNum'] = data['reserveCount']
-            content['T_Price'] = data['presellPrice']
+            content['T_Price'] = T_Price
             content['Collection_Num'] = data['CollectionNum']
             content['URL_NO'] = data['URL_NO']
             content['CreateTime'] = data['spiderTime']
             content['ModifyTime'] = data['modifyTime']
 
             allData.append(content)
-        res = {'Data': allData, 'totalCount': result.count()}
+        # res = {'Data': allData, 'totalCount': result.count()}
 
-        response = HttpResponse(json.dumps(res,cls=DateEncoder) ,content_type="application/json")
+        response = HttpResponse(json.dumps(allData,cls=DateEncoder) ,content_type="application/json")
         response["Access-Control-Allow-Origin"] = "*"
         response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
         response["Access-Control-Max-Age"] = "1000"
@@ -86,9 +90,9 @@ def GetTmallYuShouDataAPI(request):
             content['ItemName'] = data['ItemName']
 
             allData.append(content)
-        res = {'Data': allData, 'totalCount': result.count()}
+        # res = {'Data': allData, 'totalCount': result.count()}
 
-        response = HttpResponse(json.dumps(res, cls=DateEncoder), content_type="application/json")
+        response = HttpResponse(json.dumps(allData, cls=DateEncoder), content_type="application/json")
         response["Access-Control-Allow-Origin"] = "*"
         response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
         response["Access-Control-Max-Age"] = "1000"
