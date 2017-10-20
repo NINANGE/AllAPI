@@ -18,12 +18,12 @@ reload(sys)
 sys.setdefaultencoding("utf-8")
 
 # @csrf_exempt
-def GetTmallYuShouBaseInfoDataAPI(request):
+def GetTmallYuShouDataAPI(request):
     if request.method == 'POST':
-        TreasureID = request.GET.get('TreasureID')
-        allData = []
 
-        result = GetTmallYuShouBaseInfoData(TreasureID)
+        allData = []
+        result = GetAllTmallYuShouData()
+
         for data in result:
             content = {}
             T_Price = data['presellPrice']
@@ -54,12 +54,13 @@ def GetTmallYuShouBaseInfoDataAPI(request):
     else:
         print '------******------'
 
-def GetTmallYuShouDataAPI(request):
+def GetTmallYuShouBaseInfoDataAPI(request):
     if request.method == 'POST':
+
+
+        TreasureID = request.GET.get('TreasureID')
+        result = GetTmallYuShouBaseInfoData(TreasureID)
         allData = []
-
-        result = GetAllTmallYuShouData()
-
         for data in result:
             content = {}
             content['TreasureID'] = data['TreasureID']
