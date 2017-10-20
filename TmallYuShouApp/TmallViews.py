@@ -27,7 +27,7 @@ def GetTmallYuShouDataAPI(request):
         result = GetAllTmallYuShouData()
         for data in result:
             content = {}
-            content['TreasureID'] = data['NCategory_Name']
+            content['TreasureID'] = data['TreasureID']
             content['StartTime'] = data['StartTime']
             content['EndTime'] = data['EndTime']
             content['TailStartTime'] = data['paymentBeginDate']
