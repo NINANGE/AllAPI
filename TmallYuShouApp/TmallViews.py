@@ -8,6 +8,7 @@ import pymongo
 from django.http import HttpResponseRedirect,HttpResponse
 from TmallYuShouApp.TmallApiConnectionModel import GetAllTmallYuShouData
 import json
+import datetime
 import sys
 import os
 import subprocess
@@ -73,12 +74,21 @@ def GetTmallYuShouDataAPI(request):
             allData.append(content)
         # ErrDesc = {'ErrDesc':result.count()}
         # allData.append(ErrDesc)
-
+        # print allData
         res = {'Data': allData, 'totalCount': result.count()}
 
-        response = HttpResponse(json.dumps(res) ,content_type="application/json")
+        response = HttpResponse(json.dumps(res,cls=DateEncoder) ,content_type="application/json")
         response["Access-Control-Allow-Origin"] = "*"
         response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
         response["Access-Control-Max-Age"] = "1000"
         response["Access-Control-Allow-Headers"] = "*"
         return response
+
+class DateEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime.datetime):
+            return obj.strftime('%Y-%m-%d %H:%M:%S')
+        elif isinstance(obj, datetime.date):
+            return obj.strftime("%Y-%m-%d")
+        else:
+            return json.JSONEncoder.default(self, obj)
