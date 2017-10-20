@@ -20,8 +20,6 @@ sys.setdefaultencoding("utf-8")
 # @csrf_exempt
 def GetTmallYuShouBaseInfoDataAPI(request):
     if request.method == 'POST':
-        print '******************888888888888**********************'
-    else:
         TreasureID = request.GET.get('TreasureID')
         allData = []
 
@@ -47,21 +45,20 @@ def GetTmallYuShouBaseInfoDataAPI(request):
             allData.append(content)
         # res = {'Data': allData, 'totalCount': result.count()}
 
-        response = HttpResponse(json.dumps(allData,cls=DateEncoder) ,content_type="application/json")
+        response = HttpResponse(json.dumps(allData, cls=DateEncoder), content_type="application/json")
         response["Access-Control-Allow-Origin"] = "*"
         response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
         response["Access-Control-Max-Age"] = "1000"
         response["Access-Control-Allow-Headers"] = "*"
         return response
+    else:
+        print '------******------'
 
 def GetTmallYuShouDataAPI(request):
-    if request.method == 'GET':
+    if request.method == 'POST':
         allData = []
 
-
-
         result = GetAllTmallYuShouData()
-
 
         for data in result:
             content = {}
@@ -91,7 +88,6 @@ def GetTmallYuShouDataAPI(request):
 
             allData.append(content)
         # res = {'Data': allData, 'totalCount': result.count()}
-
         response = HttpResponse(json.dumps(allData, cls=DateEncoder), content_type="application/json")
         response["Access-Control-Allow-Origin"] = "*"
         response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
