@@ -6,7 +6,7 @@ def GetAllTmallYuShouData():
     dbconn = mongodbConn()
     dbconn.connect()
     conn = dbconn.getConn()
-    result = conn.TmallYuShouDB.TmallYuShouTB.find({})
+    result = conn.TmallYuShouDB.TmallYuShouBaseInfoTB.find({})
 
     return result
 
