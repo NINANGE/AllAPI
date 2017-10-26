@@ -229,7 +229,8 @@ def getAll_PinLun(ItemNames,TreasureIDs):
 class mongodbConns:
     conn = None
     # servers = "mongodb://127.0.0.1:27017"
-    servers = "mongodb://192.168.3.172:27017"
+    # servers = "mongodb://192.168.3.172:27017"
+    servers = "mongodb://192.168.2.5:27017"
 
     def connect(self):
         self.conn = pymongo.MongoClient(self.servers)
